@@ -134,6 +134,8 @@ exports.paymentSuccess = async (req, res) => {
 exports.getLastOrderDetails = async (req, res) => {
   try {
     const items = await orderModel.find().sort({ orderDateTime: -1 }).limit(1);
+    console.log(items);
+    const orderDEtails = await paypalController.retrieveOrderDetails(items[0].captureOrderId, items[0].access_token)
     return response({ res, data: items.length ? items : null });
   } catch (error) {
     response({ res, error });

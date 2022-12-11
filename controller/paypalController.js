@@ -101,3 +101,20 @@ exports.capturePayment = async (id, token) => {
         return error
     }
 }
+exports.retrieveOrderDetails = async (id, token) => {
+    console.log(id, token, "here");
+    try {
+        var config = {
+            method: 'get',
+            url: `${PAYPAL_BASE_URL}/v2/checkout/orders/${id}`,
+            headers: {
+                'Content-Type': 'application/json',
+                'Prefer': 'return=representation',
+                'Authorization': `Bearer ${token}`
+            }
+        };
+        return axios(config)
+    } catch (error) {
+        return error
+    }
+}
