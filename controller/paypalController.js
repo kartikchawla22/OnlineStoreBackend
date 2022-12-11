@@ -29,6 +29,44 @@ exports.paypalAuth = async () => {
     return await axios(config)
 }
 
+exports.createOrder = async (token, total, intent) => {
+    const data = JSON.stringify({
+        "intent": intent,
+        "application_context": {
+            return_url: "http://localhost:3000/success",
+            cancel_url: "http://localhost:3000/cancel",
+            "brand_name": "EXAMPLE INC",
+            "locale": "en-US",
+            "user_action": "PAY_NOW",
+            "payment_method": {
+                "payee_preferred": "IMMEDIATE_PAYMENT_REQUIRED",
+                "standard_entry_class_code": "TEL"
+            }
+        },
+        "purchase_units": [
+            {
+                "amount": {
+                    "currency_code": "CAD",
+                    "value": total
+                }
+            }
+        ]
+    });
+    const config = {
+        method: 'post',
+        url: `${PAYPAL_BASE_URL}/v2/checkout/orders`,
+        headers: {
+            'Content-Type': 'application/json',
+            'Prefer': 'return=representation',
+            'Authorization': `Bearer ${token}`,
+            'Accept': 'application/json',
+            'Accept-Encoding': 'identity'
+        },
+        data: data
+    };
+    return axios(config)
+}
+
 exports.authorizePayment = async (id, token) => {
     try {
         var config = {
