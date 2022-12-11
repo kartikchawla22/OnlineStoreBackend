@@ -5,6 +5,11 @@ const url = require("url");
 const paypalController = require("./paypalController");
 const { AxiosError } = require("axios");
 
+const intentEnum = {
+  capture: "CAPTURE",
+  authorize: "AUTHORIZE"
+}
+
 exports.insertItem = async (req, res) => {
   try {
     const { imageUrl, name, description, maxQuantity, price } = req.body;
@@ -94,13 +99,13 @@ exports.paymentSuccess = async (req, res) => {
     const capturePaymentResponse =
       order.intent === intentEnum.authorize
         ? await paypalController.authorizePayment(
-            order.captureOrderId,
-            order.access_token
-          )
+          order.captureOrderId,
+          order.access_token
+        )
         : await paypalController.capturePayment(
-            order.captureOrderId,
-            order.access_token
-          );
+          order.captureOrderId,
+          order.access_token
+        );
     if (typeof capturePaymentResponse == AxiosError) {
       response({ res, capturePaymentResponse });
     }
